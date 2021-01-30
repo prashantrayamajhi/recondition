@@ -1,11 +1,11 @@
-if(process.env.NODE_ENV !== 'production'){ 
-    require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
 }
 
-// connect to database
-require('./db/db')
+const app = require('./app')
 
-const app = require('./app');
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 
-app.listen(PORT || process.env.PORT, console.log(`Listening on port ${PORT}`))
+require('./db/db').then(() => {
+  app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+})
