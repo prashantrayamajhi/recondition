@@ -44,7 +44,7 @@ exports.getCategoryById = async (req, res) => {
  */
 exports.postCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    let { name } = req.body;
     name = name.toLowerCase();
     name = name.charAt(0).toUpperCase() + name.slice(1);
     const isCategoryExists = await Category.findOne({ name });
@@ -67,12 +67,12 @@ exports.postCategory = async (req, res) => {
  */
 exports.updateCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    let { name } = req.body;
     name = name.toLowerCase();
     name = name.charAt(0).toUpperCase() + name.slice(1);
     const id = req.params.id;
     const updatedCategory = { name };
-    const savedCategory = Category.findOneAndUpdate(
+    const savedCategory = Category.findByIdAndUpdate(
       { _id: id },
       { updatedCategory }
     );
@@ -94,6 +94,13 @@ exports.updateCategory = async (req, res) => {
  */
 exports.deleteCategory = async (req, res) => {
   try {
+    const id = req.params.id;
+    const isDeleted = Category.findByIdAndDelete({ _id: id });
+    if (isDeleted) {
+      res.status(200).send({ msg: "Category deleted" });
+    } else {
+      res.status(404).send({ msg: "Category not found" });
+    }
   } catch (err) {
     res.status(500).json({ err });
   }

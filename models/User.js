@@ -1,5 +1,5 @@
-const mongoose = require("mongoose")
-const bcrypt = require('bcrypt')
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -17,11 +17,6 @@ const UserSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-  },
   address: {
     type: String,
     required: true,
@@ -31,6 +26,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "staff",
     enum: ["admin", "staff"],
+  },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
   },
 });
 
