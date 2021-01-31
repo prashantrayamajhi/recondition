@@ -31,7 +31,8 @@ exports.getProductById = async (req, res) => {
       res.status(404).send({ err: 'Product not found' })
     }
   } catch (err) {
-    res.status(500).json({ err })
+    console.log(err)
+    res.status(404).send({ err: 'Product not found' })
   }
 }
 
@@ -43,19 +44,12 @@ exports.getProductById = async (req, res) => {
  */
 exports.postProduct = async (req, res) => {
   try {
-    let { model, category, price, description } = req.body
-    model = model.toLowerCase()
-    model = model.charAt(0).toUpperCase() + model.slice(1)
-
-    // const isProductExists = await Model.findOne({name});
-    if (
-      // isProductExists
-      model
-    ) {
-      return res.status(409).send({ msg: 'Product already exists' })
-    }
-    const product = new Product({ model, category, price, description })
-    const saved = product.save()
+    let { name, model, category, price, description } = req.body
+    name = name.toLowerCase()
+    name = name.trim()
+    name = name.charAt(0).toUpperCase() + name.slice(1)
+    const product = new Product({ name, model, category, price, description })
+    const saved = await product.save()
     res.status(201).json({ data: saved })
   } catch (err) {
     console.log(err)
@@ -71,22 +65,23 @@ exports.postProduct = async (req, res) => {
  */
 exports.updateProduct = async (req, res) => {
   try {
-    let { model, category, price, description } = req.body
-    model = model.toLowerCase()
-    model = model.charAt(0).toUpperCase() + model.slice(1)
+    let { name, model, category, price, description } = req.body
+    name = name.toLowerCase()
+    name = name.trim()
+    name = name.charAt(0).toUpperCase() + name.slice(1)
     const { id } = req.params
-    const updatedProduct = { model, category, price, description }
-    const savedProduct = Product.findByIdAndUpdate(
+    const updatedProduct = { name, model, category, price, description }
+    const savedProduct = await Product.findByIdAndUpdate(
       { _id: id },
-      { updatedProduct }
+      updatedProduct
     )
     if (savedProduct) {
       res.status(200).send({ msg: 'Product updated' })
     } else {
-      res.status(400).send({ err: 'Product not found' })
+      res.status(404).send({ err: 'Product not found' })
     }
   } catch (err) {
-    res.status(400).send({ err: 'Product not found' })
+    res.status(404).send({ err: 'Product not found' })
   }
 }
 
@@ -99,13 +94,13 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params
-    const isDeleted = Product.findByIdAndDelete({ _id: id })
+    const isDeleted = await Product.findByIdAndDelete({ _id: id })
     if (isDeleted) {
       res.status(200).send({ msg: 'Product deleted' })
     } else {
       res.status(404).send({ msg: 'Product not found' })
     }
   } catch (err) {
-    res.status(500).json({ err })
+    res.status(404).send({ msg: 'Product not found' })
   }
 }
