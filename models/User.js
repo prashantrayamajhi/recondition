@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -24,30 +24,30 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: "staff",
-    enum: ["admin", "staff"],
+    default: 'staff',
+    enum: ['admin', 'staff'],
   },
   password: {
     type: String,
     required: true,
     trim: true,
   },
-});
+})
 
-UserSchema.pre("save", function (next) {
-  const user = this;
-  if (!user.isModified("password")) {
-    next();
+UserSchema.pre('save', function (next) {
+  const user = this
+  if (!user.isModified('password')) {
+    next()
   }
   bcrypt.hash(user.password, 12, (err, hash) => {
     if (err) {
-      return new Error("Failed to generate hash");
+      return new Error('Failed to generate hash')
     }
-    user.password = hash;
-    next();
-  });
-});
+    user.password = hash
+    next()
+  })
+})
 
-const User = mongoose.model("User", UserSchema);
+const User = mongoose.model('User', UserSchema)
 
-module.exports = User;
+module.exports = User

@@ -12,6 +12,7 @@ const mockProduct = {
   model: 'Mock model',
   description: 'Mock description',
   price: 10,
+  name: 'Mock name',
 }
 
 async function createMockAdmin() {
@@ -25,28 +26,6 @@ async function createMockAdmin() {
   })
 
   await mockUser.save()
-}
-
-async function createMockProduct() {
-  const savedProduct = new Product({
-    category: 'bike',
-    type: 'second',
-    seller: '4edd40c86762e0fb12000003',
-    name: 'Mock product name',
-    price: 10,
-    location: 'mock_address',
-    description: 'mock description is very stupid of not getting 20',
-    specification: [
-      {
-        brand: '4edd40c86762e0fb12700003',
-        lot: 10,
-        anchal: 'mock anchal',
-        mileage: 10,
-      },
-    ],
-  })
-
-  await savedProduct.save()
 }
 
 const request = supertest(app)
@@ -90,27 +69,142 @@ describe('Test authenticated product jwt route', () => {
     done()
   })
 
-  it('Test post product route', async (done) => {
-    /*
-        const responseContinue = await request
-            .post('/api/v1/admin/products/')
-            .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-            .send(mockProduct)
+  describe('Test post product admin route', () => {
+    it('Test post product route', async (done) => {
+      const responseContinue = await request
+        .post('/api/v1/admin/products/')
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(mockProduct)
 
-        expect(responseContinue.statusCode).toBe(201)
+      expect(responseContinue.statusCode).toBe(201)
 
-        expect(responseContinue.body).toBeTruthy()
+      expect(responseContinue.body).toBeTruthy()
 
-        expect(responseContinue.body).toBeInstanceOf(Object)
+      expect(responseContinue.body).toBeInstanceOf(Object)
 
-        expect(responseContinue.body._id).toBeTruthy()
+      expect(responseContinue.body.data).toBeTruthy()
 
-        const products = await Product.find({})
+      const products = await Product.find({})
 
-        expect(products.length).toBe(1)
-        */
-    expect(1).toBe(1)
-    done()
+      expect(products.length).toBe(1)
+
+      done()
+    })
+  })
+
+  describe('Test delete product admin route', () => {
+    it('Test delete product route will return 204 if success deleted', async (done) => {
+      await request
+        .post('/api/v1/admin/products/')
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(mockProduct)
+
+      const product = await Product.findOne({ name: 'Mock name' })
+
+      const responseContinue = await request
+        .delete(`/api/v1/admin/products/${product._id}`)
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(mockProduct)
+
+      expect(responseContinue.statusCode).toBe(204)
+
+      expect(responseContinue.body).toBeTruthy()
+
+      done()
+    })
+
+    it('Test delete product route will return 500 if product _id is not of type object id', async (done) => {
+      const responseContinue = await request
+        .delete(`/api/v1/admin/products/1`)
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(mockProduct)
+
+      expect(responseContinue.statusCode).toBe(500)
+
+      done()
+    })
+
+    it('Test delete product route will return 404 if product not exists', async (done) => {
+      const responseContinue = await request
+        .delete(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(mockProduct)
+
+      expect(responseContinue.statusCode).toBe(404)
+
+      expect(responseContinue.body).toMatchObject({ msg: 'Product not found' })
+
+      done()
+    })
+  })
+  describe('Test update product admin route', () => {
+    it('Test update product route will return 404 if product not exists', async (done) => {
+      const updatedMockProduct = {
+        ...mockProduct,
+        _id: '5d6ede6a0ba62570afcedd3a',
+        name: 'updated mock name',
+      }
+
+      const responseContinue = await request
+        .patch(`/api/v1/admin/products`)
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(updatedMockProduct)
+
+      expect(responseContinue.statusCode).toBe(404)
+
+      expect(responseContinue.body).toMatchObject({ err: 'Product not found' })
+
+      done()
+    })
+
+    it('Test update product route will return 500 if product _id is bad', async (done) => {
+      const updatedMockProduct = {
+        ...mockProduct,
+        _id: '1',
+        name: 'updated mock name',
+      }
+
+      const responseContinue = await request
+        .patch(`/api/v1/admin/products`)
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(updatedMockProduct)
+
+      expect(responseContinue.statusCode).toBe(500)
+
+      done()
+    })
+
+    it('Test update product route will return 200 if product is updated', async (done) => {
+      await request
+        .post('/api/v1/admin/products/')
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(mockProduct)
+
+      const product = await Product.findOne({ name: 'Mock name' })
+
+      const updatedMockProduct = {
+        ...mockProduct,
+        _id: product._id,
+        name: 'Updated mock name',
+      }
+
+      const responseContinue = await request
+        .patch(`/api/v1/admin/products`)
+        .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
+        .send(updatedMockProduct)
+
+      expect(responseContinue.statusCode).toBe(200)
+
+      const productOld = await Product.findOne({ name: 'Mock name' })
+
+      const productNew = await Product.findOne({ name: 'Updated mock name' })
+
+      expect(productOld).toBeNull()
+
+      expect(productNew).not.toBeNull()
+
+      done()
+    })
   })
 })
 

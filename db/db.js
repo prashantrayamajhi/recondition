@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 module.exports = mongoose
   .connect(process.env.DATABASE_URI, {
@@ -8,5 +8,5 @@ module.exports = mongoose
     useCreateIndex: true,
   })
   .then(() => {
-    console.log("Connected to the database");
-  });
+    console.log('Connected to the database')
+  })

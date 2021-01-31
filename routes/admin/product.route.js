@@ -29,7 +29,7 @@ router.post(
 
 // update product route
 router.patch(
-  '/:id',
+  '/',
   passport.authenticate('jwt', { session: false }),
   adminRouteRequired,
   controller.updateProduct

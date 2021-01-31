@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require('joi')
 
 module.exports.userDataSchema = Joi.object({
   name: Joi.string().min(5).required().strict(),
@@ -6,4 +6,4 @@ module.exports.userDataSchema = Joi.object({
   password: Joi.string().min(7).required().strict(),
   phone: Joi.string().min(10).required().strict(),
   address: Joi.string().required().strict(),
-});
+})
