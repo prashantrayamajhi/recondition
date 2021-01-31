@@ -1,5 +1,4 @@
-const { json } = require("express");
-const Category = require("./../../models/Category");
+const Category = require('../../models/Category')
 
 /**
  * Get Category
@@ -9,12 +8,12 @@ const Category = require("./../../models/Category");
  */
 exports.getCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.status(200).json({ data: categories });
+    const categories = await Category.find()
+    res.status(200).json({ data: categories })
   } catch (err) {
-    res.status(500).json({ err });
+    res.status(500).json({ err })
   }
-};
+}
 
 /**
  * Get Category By Id
@@ -24,17 +23,17 @@ exports.getCategories = async (req, res) => {
  */
 exports.getCategoryById = async (req, res) => {
   try {
-    const id = req.params.id;
-    const category = await Category.findOne({ _id: id });
+    const { id } = req.params
+    const category = await Category.findOne({ _id: id })
     if (category) {
-      res.status(200).json({ data: category });
+      res.status(200).json({ data: category })
     } else {
-      res.status(404).send({ err: "Category not found" });
+      res.status(404).send({ err: 'Category not found' })
     }
   } catch (err) {
-    res.status(500).json({ err });
+    res.status(500).json({ err })
   }
-};
+}
 
 /**
  * Post Category
@@ -44,20 +43,21 @@ exports.getCategoryById = async (req, res) => {
  */
 exports.postCategory = async (req, res) => {
   try {
-    let { name } = req.body;
-    name = name.toLowerCase();
-    name = name.charAt(0).toUpperCase() + name.slice(1);
-    const isCategoryExists = await Category.findOne({ name });
-    if (isCategoryExists) {
-      return res.status(409).send({ msg: "Category already exists" });
+    let { name } = req.body
+    name = name.trim()
+    name = name.toLowerCase()
+    name = name.charAt(0).toUpperCase() + name.slice(1)
+    const categoryExists = await Category.findOne({ name })
+    if (categoryExists) {
+      return res.status(409).send({ msg: 'Category already exists' })
     }
-    const category = new Category({ name });
-    const saved = category.save();
-    res.status(201).json({ data: saved });
+    const category = new Category({ name })
+    const saved = await category.save()
+    res.status(201).json({ data: saved })
   } catch (err) {
-    res.status(500).json({ err });
+    res.status(500).json({ err })
   }
-};
+}
 
 /**
  * Update Category
@@ -67,24 +67,24 @@ exports.postCategory = async (req, res) => {
  */
 exports.updateCategory = async (req, res) => {
   try {
-    let { name } = req.body;
-    name = name.toLowerCase();
-    name = name.charAt(0).toUpperCase() + name.slice(1);
-    const id = req.params.id;
-    const updatedCategory = { name };
-    const savedCategory = Category.findByIdAndUpdate(
+    let { name } = req.body
+    name = name.trim()
+    name = name.toLowerCase()
+    name = name.charAt(0).toUpperCase() + name.slice(1)
+    const { id } = req.params
+    const updatedCategory = { name }
+    const update = await Category.findByIdAndUpdate(
       { _id: id },
-      { updatedCategory }
-    );
-    if (savedCategory) {
-      res.status(200).send({ msg: "Category updated" });
-    } else {
-      res.status(400).send({ err: "Category not found" });
+      updatedCategory
+    )
+    if (update === null) {
+      return res.status(404).send({ err: 'Category not found' })
     }
+    res.status(200).send({ msg: 'Category updated' })
   } catch (err) {
-    res.status(400).send({ err: "Category not found" });
+    res.status(404).send({ err: 'Category not found' })
   }
-};
+}
 
 /**
  * Delete Category
@@ -94,14 +94,14 @@ exports.updateCategory = async (req, res) => {
  */
 exports.deleteCategory = async (req, res) => {
   try {
-    const id = req.params.id;
-    const isDeleted = Category.findByIdAndDelete({ _id: id });
+    const { id } = req.params
+    const isDeleted = await Category.findByIdAndDelete({ _id: id })
     if (isDeleted) {
-      res.status(200).send({ msg: "Category deleted" });
+      res.status(200).send({ msg: 'Category deleted' })
     } else {
-      res.status(404).send({ msg: "Category not found" });
+      res.status(404).send({ msg: 'Category not found' })
     }
   } catch (err) {
-    res.status(500).json({ err });
+    res.status(404).send({ msg: 'Category not found' })
   }
-};
+}
