@@ -29,6 +29,7 @@ exports.postLogin = async (req, res) => {
         email: user.email,
         userId: user._id,
         accessToken: token,
+        role: user.role,
       })
     }
     return res.status(401).send({ error: 'Invalid Password' })
@@ -47,13 +48,14 @@ exports.postLogin = async (req, res) => {
 exports.postSignup = async (req, res) => {
   try {
     // get name email address phone password from request body
-    const { name, email, address, phone, password } = req.body
+    const { name, email, password, address, phone, role } = req.body
 
     const data = { name, email, address, phone, password }
 
     try {
       await userDataSchema.validateAsync(data)
     } catch (e) {
+      console.log(e)
       return res.status(500).json(e)
     }
 
@@ -69,7 +71,7 @@ exports.postSignup = async (req, res) => {
       phone,
       address,
       password,
-      role: 'staff',
+      role,
     })
 
     // Save the user

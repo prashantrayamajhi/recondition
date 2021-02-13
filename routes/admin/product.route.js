@@ -1,37 +1,30 @@
 const router = require('express').Router()
 const passport = require('passport')
 const controller = require('../../controllers/admin/product.controller')
-const { adminRouteRequired } = require('../../middlewares/checkRole')
+const { adminAndCoAdminRouteRequired } = require('../../middlewares/checkRole')
+const upload = require('../../middlewares/multer')
 
 // get product route
-router.get(
-  '/',
-  passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
-  controller.getProducts
-)
+router.get('/', controller.getProducts)
 
 // get product by id route
-router.get(
-  '/:id',
-  passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
-  controller.getProductById
-)
+router.get('/:id', controller.getProductById)
 
 // post product route
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
+  upload.single('thumbnail'),
   controller.postProduct
 )
 
 // update product route
 router.patch(
-  '/',
+  '/:id',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
+  upload.single('thumbnail'),
   controller.updateProduct
 )
 
@@ -39,7 +32,7 @@ router.patch(
 router.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
   controller.deleteProduct
 )
 

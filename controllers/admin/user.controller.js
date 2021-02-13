@@ -64,9 +64,9 @@ exports.postUser = async (req, res) => {
  */
 exports.updateUser = async (req, res) => {
   try {
-    let { name, email, phone, address, role, password } = req.body
+    let { name, email, phone, address, role } = req.body
     const { id } = req.params
-    const updatedUser = { name, email, phone, address, role, password }
+    const updatedUser = { name, email, phone, address, role }
     const savedUser = await User.findByIdAndUpdate({ _id: id }, updatedUser)
     if (savedUser) {
       res.status(200).send({ msg: 'User updated' })

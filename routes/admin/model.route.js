@@ -1,13 +1,13 @@
 const router = require('express').Router()
 const passport = require('passport')
 const controller = require('../../controllers/admin/model.controller')
-const { adminRouteRequired } = require('../../middlewares/checkRole')
+const { adminAndCoAdminRouteRequired } = require('../../middlewares/checkRole')
 
 // get model route
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
   controller.getModel
 )
 
@@ -15,7 +15,7 @@ router.get(
 router.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
   controller.getModelById
 )
 
@@ -23,7 +23,7 @@ router.get(
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
   controller.postModel
 )
 
@@ -31,7 +31,7 @@ router.post(
 router.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
   controller.updateModel
 )
 
@@ -39,7 +39,7 @@ router.patch(
 router.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  adminRouteRequired,
+  adminAndCoAdminRouteRequired,
   controller.deleteModel
 )
 
