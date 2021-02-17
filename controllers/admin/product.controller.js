@@ -53,11 +53,11 @@ exports.postProduct = async (req, res) => {
     name = name.charAt(0).toUpperCase() + name.slice(1)
     let thumbnail = req.file.path
     thumbnail = thumbnail.slice(7)
-    console.log(thumbnail)
     const product = new Product({ name, thumbnail, model, price, description })
     const saved = await product.save()
     res.status(201).json({ data: saved._id })
   } catch (err) {
+    console.log('Here')
     console.log(err)
     res.status(500).json({ err })
   }
@@ -75,7 +75,6 @@ exports.updateProduct = async (req, res) => {
   }
   try {
     const { id } = req.params
-    console.log(id, req.body)
     let { name, model, category, price, description } = req.body
     name = name.toLowerCase()
     name = name.trim()

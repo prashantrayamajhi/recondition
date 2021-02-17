@@ -11,6 +11,7 @@ describe('User model required validation', () => {
         phone: 'mock phone',
         password: 'mock password',
         address: 'mock_address',
+        role: 'admin',
       })
       await user.validate()
     } catch (e) {

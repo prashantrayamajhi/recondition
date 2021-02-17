@@ -52,7 +52,7 @@ describe('Check Role Test', () => {
     )
     expect(theMessage).toMatchObject({ err: 'Not authorized' })
     expect(i).toBe(0)
-    expect(theStatus).toBe(403)
+    expect(theStatus).toBe(401)
     // ...
     done()
   })

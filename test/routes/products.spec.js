@@ -1,5 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
+const path = require('path')
+const fs = require('mz/fs')
 const supertest = require('supertest')
 const Product = require('../../models/Product')
 const User = require('../../models/User')
@@ -66,6 +68,11 @@ describe('Test authenticated product jwt route', () => {
 
     await getAccessTokenByLoginWithMockUser()
 
+    // Test if the test file is exist
+    fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then((exists) => {
+      if (!exists) throw new Error('file does not exist')
+    })
+
     done()
   })
 
@@ -74,7 +81,12 @@ describe('Test authenticated product jwt route', () => {
       const responseContinue = await request
         .post('/api/v1/admin/products/')
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(mockProduct)
+        .field('name', mockProduct.name)
+        .field('price', mockProduct.price)
+        .field('category', mockProduct.category)
+        .field('description', mockProduct.description)
+        .field('model', mockProduct.model)
+        .attach('thumbnail', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
       expect(responseContinue.statusCode).toBe(201)
 
@@ -97,7 +109,12 @@ describe('Test authenticated product jwt route', () => {
       await request
         .post('/api/v1/admin/products/')
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(mockProduct)
+        .field('name', mockProduct.name)
+        .field('price', mockProduct.price)
+        .field('category', mockProduct.category)
+        .field('description', mockProduct.description)
+        .field('model', mockProduct.model)
+        .attach('thumbnail', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
       const product = await Product.findOne({ name: 'Mock name' })
 
@@ -117,7 +134,6 @@ describe('Test authenticated product jwt route', () => {
       const responseContinue = await request
         .delete(`/api/v1/admin/products/1`)
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(mockProduct)
 
       expect(responseContinue.statusCode).toBe(500)
 
@@ -128,7 +144,6 @@ describe('Test authenticated product jwt route', () => {
       const responseContinue = await request
         .delete(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(mockProduct)
 
       expect(responseContinue.statusCode).toBe(404)
 
@@ -139,16 +154,11 @@ describe('Test authenticated product jwt route', () => {
   })
   describe('Test update product admin route', () => {
     it('Test update product route will return 404 if product not exists', async (done) => {
-      const updatedMockProduct = {
-        ...mockProduct,
-        _id: '5d6ede6a0ba62570afcedd3a',
-        name: 'updated mock name',
-      }
-
       const responseContinue = await request
-        .patch(`/api/v1/admin/products`)
+        .patch(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(updatedMockProduct)
+        .field('name', 'updated mock name')
+        .attach('thumbnail', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
       expect(responseContinue.statusCode).toBe(404)
 
@@ -158,16 +168,10 @@ describe('Test authenticated product jwt route', () => {
     })
 
     it('Test update product route will return 500 if product _id is bad', async (done) => {
-      const updatedMockProduct = {
-        ...mockProduct,
-        _id: '1',
-        name: 'updated mock name',
-      }
-
       const responseContinue = await request
-        .patch(`/api/v1/admin/products`)
+        .patch(`/api/v1/admin/products/1`)
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(updatedMockProduct)
+        .attach('thumbnail', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
       expect(responseContinue.statusCode).toBe(500)
 
@@ -178,20 +182,20 @@ describe('Test authenticated product jwt route', () => {
       await request
         .post('/api/v1/admin/products/')
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(mockProduct)
+        .field('name', mockProduct.name)
+        .field('price', mockProduct.price)
+        .field('category', mockProduct.category)
+        .field('description', mockProduct.description)
+        .field('model', mockProduct.model)
+        .attach('thumbnail', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
       const product = await Product.findOne({ name: 'Mock name' })
 
-      const updatedMockProduct = {
-        ...mockProduct,
-        _id: product._id,
-        name: 'Updated mock name',
-      }
-
       const responseContinue = await request
-        .patch(`/api/v1/admin/products`)
+        .patch(`/api/v1/admin/products/${product._id}`)
         .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-        .send(updatedMockProduct)
+        .field('name', 'Updated mock name')
+        .attach('thumbnail', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
       expect(responseContinue.statusCode).toBe(200)
 

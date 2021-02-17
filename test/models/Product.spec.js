@@ -11,6 +11,7 @@ describe('Product model required validation', () => {
         description: 'Mock description',
         price: 10,
         name: 'Mock name',
+        thumbnail: 'Mock thumbnail',
       })
       await user.validate()
     } catch (e) {

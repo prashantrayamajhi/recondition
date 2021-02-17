@@ -79,7 +79,7 @@ exports.postSignup = async (req, res) => {
     // Return status of created if successful
     return res.status(201).json({ message: 'Successfully signed up' })
   } catch (err) {
-    // console.log(err)
+    console.log(err)
     return res.status(500).json(err)
   }
 }

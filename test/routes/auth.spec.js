@@ -35,6 +35,7 @@ describe('Test authentication route', () => {
         password: 'mock password',
         address: 'mock_address',
         city: 'mock city',
+        role: 'admin',
       })
 
       expect(response.statusCode).toBe(201)
@@ -56,6 +57,7 @@ describe('Test authentication route', () => {
         password: 'mock password',
         address: 'mock_address',
         city: 'mock city',
+        role: 'admin',
       })
 
       await mockUser.save()
@@ -67,6 +69,7 @@ describe('Test authentication route', () => {
         password: 'mock password',
         address: 'mock_address',
         city: 'mock city',
+        role: 'admin',
       })
 
       expect(response.statusCode).toBe(409)
@@ -90,6 +93,7 @@ describe('Test authentication route', () => {
         password: 'mock password',
         address: 'mock_address',
         city: 'mock city',
+        role: 'admin',
       })
 
       await mockUser.save()
