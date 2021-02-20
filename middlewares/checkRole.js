@@ -6,11 +6,11 @@
  * @returns {*}
  */
 exports.adminRouteRequired = (req, res, next) => {
-  if (req.user.role === 'admin') {
-    next()
-  } else {
-    return res.status(401).send({ err: 'Not authorized' })
-  }
+    if (req.user.role === 'admin') {
+        next()
+    } else {
+        return res.status(401).send({ err: 'Not authorized' })
+    }
 }
 
 /**
@@ -21,9 +21,9 @@ exports.adminRouteRequired = (req, res, next) => {
  * @returns {*}
  */
 exports.adminAndCoAdminRouteRequired = (req, res, next) => {
-  if (req.user.role === 'admin' || req.user.role === 'co-admin') {
-    next()
-  } else {
-    return res.status(401).send({ err: 'Not authorized' })
-  }
+    if (req.user.role === 'admin' || req.user.role === 'co-admin') {
+        next()
+    } else {
+        return res.status(401).send({ err: 'Not authorized' })
+    }
 }

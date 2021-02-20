@@ -8,14 +8,14 @@ options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
 options.secretOrKey = process.env.JWT_SECRET
 
 module.exports = (passport) => {
-  passport.use(
-    new JwtStrategy(options, (jwt_payload, done) => {
-      Users.findById(jwt_payload.userId).then((user) => {
-        if (user) {
-          return done(null, user)
-        }
-        return done(null, false)
-      })
-    })
-  )
+    passport.use(
+        new JwtStrategy(options, (jwt_payload, done) => {
+            Users.findById(jwt_payload.userId).then((user) => {
+                if (user) {
+                    return done(null, user)
+                }
+                return done(null, false)
+            })
+        })
+    )
 }

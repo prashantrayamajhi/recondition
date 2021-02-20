@@ -12,28 +12,28 @@ router.get('/:id', controller.getProductById)
 
 // post product route
 router.post(
-  '/',
-  passport.authenticate('jwt', { session: false }),
-  adminAndCoAdminRouteRequired,
-  upload.single('thumbnail'),
-  controller.postProduct
+    '/',
+    passport.authenticate('jwt', { session: false }),
+    adminAndCoAdminRouteRequired,
+    upload.single('thumbnail'),
+    controller.postProduct
 )
 
 // update product route
 router.patch(
-  '/:id',
-  passport.authenticate('jwt', { session: false }),
-  adminAndCoAdminRouteRequired,
-  upload.single('thumbnail'),
-  controller.updateProduct
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    adminAndCoAdminRouteRequired,
+    upload.single('thumbnail'),
+    controller.updateProduct
 )
 
 // delete product route
 router.delete(
-  '/:id',
-  passport.authenticate('jwt', { session: false }),
-  adminAndCoAdminRouteRequired,
-  controller.deleteProduct
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    adminAndCoAdminRouteRequired,
+    controller.deleteProduct
 )
 
 module.exports = router

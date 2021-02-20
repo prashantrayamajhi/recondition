@@ -11,32 +11,32 @@ const { signJwt } = require('../../helpers/jwt')
  * @returns {Promise<*>}
  */
 exports.postLogin = async (req, res) => {
-  // Destructuring email and password from request body
-  const { email, password } = req.body
-  try {
-    const user = await User.findOne({ email })
-    if (!user) {
-      return res.status(401).send({ error: 'Invalid Email' })
+    // Destructuring email and password from request body
+    const { email, password } = req.body
+    try {
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(401).send({ error: 'Invalid Email' })
+        }
+        // Check if password matched or not
+        const isMatch = await bcrypt.compare(password, user.password)
+        // if password matched
+        if (isMatch) {
+            // Then sign token
+            const token = signJwt(user._id)
+            // And send to response
+            return res.status(200).json({
+                email: user.email,
+                userId: user._id,
+                accessToken: token,
+                role: user.role,
+            })
+        }
+        return res.status(401).send({ error: 'Invalid Password' })
+    } catch (err) {
+        console.log(err)
+        return res.status(500).send({ err })
     }
-    // Check if password matched or not
-    const isMatch = await bcrypt.compare(password, user.password)
-    // if password matched
-    if (isMatch) {
-      // Then sign token
-      const token = signJwt(user._id)
-      // And send to response
-      return res.status(200).json({
-        email: user.email,
-        userId: user._id,
-        accessToken: token,
-        role: user.role,
-      })
-    }
-    return res.status(401).send({ error: 'Invalid Password' })
-  } catch (err) {
-    console.log(err)
-    return res.status(500).send({ err })
-  }
 }
 
 /**
@@ -46,40 +46,40 @@ exports.postLogin = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.postSignup = async (req, res) => {
-  try {
-    // get name email address phone password from request body
-    const { name, email, password, address, phone, role } = req.body
-
-    const data = { name, email, address, phone, password }
-
     try {
-      await userDataSchema.validateAsync(data)
-    } catch (e) {
-      console.log(e)
-      return res.status(500).json(e)
-    }
+        // get name email address phone password from request body
+        const { name, email, password, address, phone, role } = req.body
 
-    const userWithTheEmail = await User.findOne({ email })
-    // If email is in the database
-    if (userWithTheEmail) {
-      return res.status(409).send({ err: 'Email already registered' })
-    }
-    // Create the user
-    const user = new User({
-      name,
-      email,
-      phone,
-      address,
-      password,
-      role,
-    })
+        const data = { name, email, address, phone, password }
 
-    // Save the user
-    await user.save()
-    // Return status of created if successful
-    return res.status(201).json({ message: 'Successfully signed up' })
-  } catch (err) {
-    console.log(err)
-    return res.status(500).json(err)
-  }
+        try {
+            await userDataSchema.validateAsync(data)
+        } catch (e) {
+            console.log(e)
+            return res.status(500).json(e)
+        }
+
+        const userWithTheEmail = await User.findOne({ email })
+        // If email is in the database
+        if (userWithTheEmail) {
+            return res.status(409).send({ err: 'Email already registered' })
+        }
+        // Create the user
+        const user = new User({
+            name,
+            email,
+            phone,
+            address,
+            password,
+            role,
+        })
+
+        // Save the user
+        await user.save()
+        // Return status of created if successful
+        return res.status(201).json({ message: 'Successfully signed up' })
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
 }
