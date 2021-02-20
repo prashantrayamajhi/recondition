@@ -11,6 +11,7 @@ const AuthRoutes = require('./routes/admin/auth.route')
 const ModelRoute = require('./routes/admin/model.route')
 const ProductRoute = require('./routes/admin/product.route')
 const UserRoute = require('./routes/admin/user.route')
+const ClientMailRoute = require('./routes/client/mail.route')
 
 app.use(logger('dev'))
 
@@ -34,6 +35,7 @@ app.use('/api/v1/admin/auth', AuthRoutes)
 app.use('/api/v1/admin/models', ModelRoute)
 app.use('/api/v1/admin/products', ProductRoute)
 app.use('/api/v1/admin/users', UserRoute)
+app.use('/api/v1/client/mail', ClientMailRoute)
 
 app.use('*', (req, res) => res.status(404).json({ error: 'Nothing here' }))
 
