@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer')
 
-export default class EmailService {
+module.exports = class EmailService {
     static async sendEmail(name, email, subject, message) {
         // create reusable transporter object using the default SMTP transport
         const transporter = nodemailer.createTransport({
