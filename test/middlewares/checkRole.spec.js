@@ -18,28 +18,6 @@ beforeEach(() => {
     i = 0
 })
 
-function adminRouteCheckFail() {
-    adminRouteRequired(
-        req,
-        {
-            status: function (status) {
-                theStatus = status
-                return this
-            },
-            send: function (message) {
-                theMessage = message
-                return this
-            },
-        },
-        () => {
-            i += 1
-        }
-    )
-    expect(theMessage).toMatchObject({ err: 'Not authorized' })
-    expect(i).toBe(0)
-    expect(theStatus).toBe(401)
-}
-
 describe('Check Role Test', () => {
     it('Test is admin auth will let user go in if user is admin', async (done) => {
         adminRouteRequired(req, {}, () => {
@@ -56,15 +34,47 @@ describe('Check Role Test', () => {
                 role: 'co-admin',
             },
         }
-        adminRouteCheckFail()
-
+        adminRouteRequired(
+            req,
+            {
+                status(status) {
+                    theStatus = status
+                    return this
+                },
+                send(message) {
+                    theMessage = message
+                    return this
+                },
+            },
+            () => {
+                i += 1
+            }
+        )
+        expect(theMessage).toMatchObject({ err: 'Not authorized' })
+        expect(i).toBe(0)
+        expect(theStatus).toBe(401)
         req = {
             user: {
                 role: 'user',
             },
         }
 
-        adminRouteCheckFail()
+        adminRouteRequired(
+            req,
+            {
+                status(status) {
+                    theStatus = status
+                    return this
+                },
+                send(message) {
+                    theMessage = message
+                    return this
+                },
+            },
+            () => {
+                i += 1
+            }
+        )
 
         // ...
         done()
