@@ -37,25 +37,42 @@ exports.getProductById = async (req, res) => {
 }
 
 /**
+ * Get Three Products
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+exports.getProductsByLimit = async (req, res) => {
+    let { limit } = req.params
+    limit = Number(limit)
+    try {
+        const products = await Product.find({}, null, { limit })
+        res.status(200).json({ data: products })
+    } catch (err) {
+        res.status(500).json({ err })
+    }
+}
+
+/**
  * Post Product
  * @param req
  * @param res
  * @returns {Promise<*>}
  */
 exports.postProduct = async (req, res) => {
-    if (!req.file) {
-        return res.status(422).send({ error: 'Image is required !' })
-    }
     try {
         let { name, model, price, description } = req.body
         name = name.toLowerCase()
         name = name.trim()
         name = name.charAt(0).toUpperCase() + name.slice(1)
-        let thumbnail = req.file.path
-        thumbnail = thumbnail.slice(7)
+        const images = []
+        req.files.forEach((img) => {
+            img.path = img.path.slice(7)
+            images.push(img.path)
+        })
         const product = new Product({
             name,
-            thumbnail,
+            images,
             model,
             price,
             description,
@@ -63,7 +80,6 @@ exports.postProduct = async (req, res) => {
         const saved = await product.save()
         res.status(201).json({ data: saved._id })
     } catch (err) {
-        console.log('Here')
         console.log(err)
         res.status(500).json({ err })
     }
