@@ -86,12 +86,13 @@ describe('Check CoAdmin Role Test', () => {
         adminAndCoAdminRouteRequired(req, {}, () => {
             i += 1
         })
-
+        /*
         req = {
             user: {
                 role: 'co-admin',
             },
         }
+        */
 
         adminAndCoAdminRouteRequired(req, {}, () => {
             i += 1
