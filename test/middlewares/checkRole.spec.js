@@ -22,11 +22,11 @@ function adminRouteCheckFail() {
     adminRouteRequired(
         req,
         {
-            status(status) {
+            status: function (status) {
                 theStatus = status
                 return this
             },
-            send(message) {
+            send: function (message) {
                 theMessage = message
                 return this
             },
@@ -101,11 +101,11 @@ describe('Check CoAdmin Role Test', () => {
         adminAndCoAdminRouteRequired(
             req,
             {
-                status(status) {
+                status: function (status) {
                     theStatus = status
                     return this
                 },
-                send(message) {
+                send: function (message) {
                     theMessage = message
                     return this
                 },
