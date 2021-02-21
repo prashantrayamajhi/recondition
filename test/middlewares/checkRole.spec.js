@@ -83,16 +83,21 @@ describe('Check Role Test', () => {
 
 describe('Check CoAdmin Role Test', () => {
     it('Test is admin auth will let user go in if user is co-admin or admin', async (done) => {
+        req = {
+            user: {
+                role: 'admin',
+            },
+        }
+
         adminAndCoAdminRouteRequired(req, {}, () => {
             i += 1
         })
-        /*
+
         req = {
             user: {
                 role: 'co-admin',
             },
         }
-        */
 
         adminAndCoAdminRouteRequired(req, {}, () => {
             i += 1
