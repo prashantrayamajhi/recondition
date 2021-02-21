@@ -6,6 +6,9 @@ const supertest = require('supertest')
 const Product = require('../../models/Product')
 const User = require('../../models/User')
 const app = require('../../app')
+const { getAccessTokenByLoginWithMockUser } = require('../functions/helper')
+const { createMockAdmin } = require('../functions/helper')
+const { connectToDatabase } = require('../functions/helper')
 // Link to your server file
 let accessToken = null
 
@@ -17,32 +20,10 @@ const mockProduct = {
     name: 'Mock name',
 }
 
-async function createMockAdmin() {
-    const mockUser = new User({
-        name: 'Mock username',
-        email: 'email@mock.com',
-        phone: 'mock phone',
-        password: 'mock password',
-        address: 'mock_address',
-        role: 'admin',
-    })
-
-    await mockUser.save()
-}
-
 const request = supertest(app)
 
 beforeAll(() => {
-    mongoose
-        .connect(process.env.DATABASE_URI_TEST, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useFindAndModify: false,
-            useCreateIndex: true,
-        })
-        .then(() => {
-            console.log('Connected to the database')
-        })
+    connectToDatabase()
 })
 
 describe('Test authenticated product jwt route', () => {
@@ -51,24 +32,7 @@ describe('Test authenticated product jwt route', () => {
         await Product.deleteMany({})
         await createMockAdmin()
 
-        async function getAccessTokenByLoginWithMockUser() {
-            const response = await request
-                .post('/api/v1/admin/auth/login')
-                .send({
-                    email: 'email@mock.com',
-                    password: 'mock password',
-                })
-
-            expect(response.statusCode).toBe(200)
-
-            expect(response.body).toBeTruthy()
-
-            expect(response.body.accessToken).toBeTruthy()
-
-            accessToken = response.body.accessToken
-        }
-
-        await getAccessTokenByLoginWithMockUser()
+        accessToken = await getAccessTokenByLoginWithMockUser()
 
         // Test if the test file is exist
         fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then(
@@ -90,10 +54,7 @@ describe('Test authenticated product jwt route', () => {
                 .field('category', mockProduct.category)
                 .field('description', mockProduct.description)
                 .field('model', mockProduct.model)
-                .attach(
-                    'thumbnail',
-                    path.join(__dirname, '..', '/mock/mock.png')
-                ) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(201)
 
@@ -121,10 +82,7 @@ describe('Test authenticated product jwt route', () => {
                 .field('category', mockProduct.category)
                 .field('description', mockProduct.description)
                 .field('model', mockProduct.model)
-                .attach(
-                    'thumbnail',
-                    path.join(__dirname, '..', '/mock/mock.png')
-                ) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             const product = await Product.findOne({ name: 'Mock name' })
 
@@ -188,10 +146,7 @@ describe('Test authenticated product jwt route', () => {
             const responseContinue = await request
                 .patch(`/api/v1/admin/products/1`)
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .attach(
-                    'thumbnail',
-                    path.join(__dirname, '..', '/mock/mock.png')
-                ) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(500)
 
@@ -207,10 +162,7 @@ describe('Test authenticated product jwt route', () => {
                 .field('category', mockProduct.category)
                 .field('description', mockProduct.description)
                 .field('model', mockProduct.model)
-                .attach(
-                    'thumbnail',
-                    path.join(__dirname, '..', '/mock/mock.png')
-                ) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             const product = await Product.findOne({ name: 'Mock name' })
 

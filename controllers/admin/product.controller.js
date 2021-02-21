@@ -32,7 +32,7 @@ exports.getProductById = async (req, res) => {
         }
     } catch (err) {
         console.log(err)
-        res.status(404).send({ err: 'Product not found' })
+        res.status(500).send(err)
     }
 }
 
@@ -49,7 +49,7 @@ exports.getProductsByLimit = async (req, res) => {
         const products = await Product.find({}, null, { limit })
         res.status(200).json({ data: products })
     } catch (err) {
-        res.status(500).json({ err })
+        res.status(500).json(err)
     }
 }
 
@@ -81,7 +81,7 @@ exports.postProduct = async (req, res) => {
         res.status(201).json({ data: saved._id })
     } catch (err) {
         console.log(err)
-        res.status(500).json({ err })
+        res.status(500).json(err)
     }
 }
 

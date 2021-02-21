@@ -31,7 +31,7 @@ exports.getUserById = async (req, res) => {
             res.status(404).send({ err: 'User not found' })
         }
     } catch (err) {
-        res.status(404).send({ err: 'User not found' })
+        res.status(500).send(err)
     }
 }
 
@@ -52,7 +52,7 @@ exports.postUser = async (req, res) => {
         const saved = await user.save()
         res.status(201).json({ data: saved })
     } catch (err) {
-        res.status(500).json({ err })
+        res.status(500).json(err)
     }
 }
 
@@ -71,10 +71,10 @@ exports.updateUser = async (req, res) => {
         if (savedUser) {
             res.status(200).send({ msg: 'User updated' })
         } else {
-            res.status(400).send({ err: 'User not found' })
+            res.status(404).send({ err: 'User not found' })
         }
     } catch (err) {
-        res.status(400).send({ err: 'User not found' })
+        res.status(500).send(err)
     }
 }
 
@@ -89,11 +89,11 @@ exports.deleteUser = async (req, res) => {
         const { id } = req.params
         const isDeleted = await User.findByIdAndDelete({ _id: id })
         if (isDeleted) {
-            res.status(200).send({ msg: 'User deleted' })
+            res.status(204).send({ msg: 'User deleted' })
         } else {
             res.status(404).send({ msg: 'User not found' })
         }
     } catch (err) {
-        res.status(404).send({ msg: 'User not found' })
+        res.status(500).send(err)
     }
 }

@@ -31,7 +31,7 @@ exports.getModelById = async (req, res) => {
             res.status(404).send({ err: 'Model not found' })
         }
     } catch (err) {
-        res.status(404).send({ err: 'Model not found' })
+        res.status(500).send(err)
     }
 }
 
@@ -81,7 +81,7 @@ exports.updateModel = async (req, res) => {
         console.log(updated)
         res.status(200).send({ msg: 'Model updated' })
     } catch (err) {
-        res.status(400).send({ err: 'Model not found' })
+        res.status(500).send(err)
     }
 }
 
@@ -96,11 +96,11 @@ exports.deleteModel = async (req, res) => {
         const { id } = req.params
         const isDeleted = await Model.findByIdAndDelete({ _id: id })
         if (isDeleted) {
-            res.status(200).send({ msg: 'Model deleted' })
+            res.status(204).send({ msg: 'Model deleted' })
         } else {
             res.status(404).send({ msg: 'Model not found' })
         }
     } catch (err) {
-        res.status(404).send({ msg: 'Model not found' })
+        res.status(500).send(err)
     }
 }
