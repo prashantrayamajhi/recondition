@@ -27,7 +27,7 @@ router.patch(
     '/:id',
     passport.authenticate('jwt', { session: false }),
     adminAndCoAdminRouteRequired,
-    upload.single('thumbnail'),
+    upload.array('image'),
     controller.updateProduct
 )
 

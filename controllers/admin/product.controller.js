@@ -37,7 +37,7 @@ exports.getProductById = async (req, res) => {
 }
 
 /**
- * Get Three Products
+ * Get Dynamic number of products
  * @param req
  * @param res
  * @returns {Promise<*>}
@@ -61,10 +61,19 @@ exports.getProductsByLimit = async (req, res) => {
  */
 exports.postProduct = async (req, res) => {
     try {
-        let { name, model, price, description } = req.body
-        name = name.toLowerCase()
+        let { name, price, model, option, color, km, description } = req.body
         name = name.trim()
+        name = name.toLowerCase()
         name = name.charAt(0).toUpperCase() + name.slice(1)
+
+        option = option.trim()
+        option = option.toLowerCase()
+        option = option.charAt(0).toUpperCase() + option.slice(1)
+
+        color = color.trim()
+        color = color.toLowerCase()
+        color = color.charAt(0).toUpperCase() + color.slice(1)
+
         const images = []
         req.files.forEach((img) => {
             img.path = img.path.slice(7)
@@ -72,9 +81,12 @@ exports.postProduct = async (req, res) => {
         })
         const product = new Product({
             name,
-            images,
             model,
             price,
+            option,
+            color,
+            km,
+            images,
             description,
         })
         const saved = await product.save()
@@ -92,24 +104,41 @@ exports.postProduct = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.updateProduct = async (req, res) => {
-    if (!req.file) {
-        return res.status(422).send({ error: 'Image is required !' })
-    }
     try {
         const { id } = req.params
-        let { name, model, category, price, description } = req.body
-        name = name.toLowerCase()
+        let { name, price, model, option, color, km, description } = req.body
+        const images = []
+        req.files.forEach((img) => {
+            img.path = img.path.slice(7)
+            images.push(img.path)
+        })
         name = name.trim()
+        name = name.toLowerCase()
         name = name.charAt(0).toUpperCase() + name.slice(1)
-        const updatedProduct = { name, model, category, price, description }
+
+        option = option.trim()
+        option = option.toLowerCase()
+        option = option.charAt(0).toUpperCase() + option.slice(1)
+
+        color = color.trim()
+        color = color.toLowerCase()
+        color = color.charAt(0).toUpperCase() + color.slice(1)
+
+        const updatedProduct = {
+            name,
+            model,
+            option,
+            color,
+            km,
+            price,
+            description,
+        }
         const savedProduct = await Product.findByIdAndUpdate(
             { _id: id },
             updatedProduct
         )
         if (savedProduct) {
             res.status(200).send({ msg: 'Product updated' })
-        } else {
-            res.status(404).send({ err: 'Product not found' })
         }
     } catch (err) {
         console.log(err)

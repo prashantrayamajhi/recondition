@@ -74,12 +74,10 @@ exports.updateModel = async (req, res) => {
         name = name.charAt(0).toUpperCase() + name.slice(1)
         const updatedModel = { name }
         const { id } = req.params
-        const updated = await Model.findByIdAndUpdate({ _id: id }, updatedModel)
-        if (updated === null) {
-            return res.status(404).send({ err: 'Model not found' })
+        if (name.length > 0) {
+            await Model.findByIdAndUpdate({ _id: id }, updatedModel)
+            return res.status(200).send({ msg: 'Model updated' })
         }
-        console.log(updated)
-        res.status(200).send({ msg: 'Model updated' })
     } catch (err) {
         res.status(500).send(err)
     }
