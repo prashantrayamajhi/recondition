@@ -66,9 +66,11 @@ exports.postProduct = async (req, res) => {
         name = name.toLowerCase()
         name = name.charAt(0).toUpperCase() + name.slice(1)
 
-        option = option.trim()
-        option = option.toLowerCase()
-        option = option.charAt(0).toUpperCase() + option.slice(1)
+        if (option) {
+            option = option.trim()
+            option = option.toLowerCase()
+            option = option.charAt(0).toUpperCase() + option.slice(1)
+        }
 
         color = color.trim()
         color = color.toLowerCase()
@@ -107,22 +109,34 @@ exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params
         let { name, price, model, option, color, km, description } = req.body
+
+        if (!(await Product.findOne({ _id: id }))) {
+            return res.status(404).json({ err: 'Product not found' })
+        }
+
+        if (name) {
+            name = name.trim()
+            name = name.toLowerCase()
+            name = name.charAt(0).toUpperCase() + name.slice(1)
+        }
+
+        if (option) {
+            option = option.trim()
+            option = option.toLowerCase()
+            option = option.charAt(0).toUpperCase() + option.slice(1)
+        }
+
+        if (color) {
+            color = color.trim()
+            color = color.toLowerCase()
+            color = color.charAt(0).toUpperCase() + color.slice(1)
+        }
+
         const images = []
         req.files.forEach((img) => {
             img.path = img.path.slice(7)
             images.push(img.path)
         })
-        name = name.trim()
-        name = name.toLowerCase()
-        name = name.charAt(0).toUpperCase() + name.slice(1)
-
-        option = option.trim()
-        option = option.toLowerCase()
-        option = option.charAt(0).toUpperCase() + option.slice(1)
-
-        color = color.trim()
-        color = color.toLowerCase()
-        color = color.charAt(0).toUpperCase() + color.slice(1)
 
         const updatedProduct = {
             name,
@@ -132,7 +146,9 @@ exports.updateProduct = async (req, res) => {
             km,
             price,
             description,
+            images,
         }
+
         const savedProduct = await Product.findByIdAndUpdate(
             { _id: id },
             updatedProduct

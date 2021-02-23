@@ -18,6 +18,8 @@ const mockProduct = {
     description: 'Mock description',
     price: 10,
     name: 'Mock name',
+    color: 'Mock color',
+    km: 'Mock km',
 }
 
 const request = supertest(app)
@@ -54,6 +56,8 @@ describe('Test authenticated product jwt route', () => {
                 .field('category', mockProduct.category)
                 .field('description', mockProduct.description)
                 .field('model', mockProduct.model)
+                .field('color', mockProduct.color)
+                .field('km', mockProduct.km)
                 .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(201)
@@ -82,6 +86,8 @@ describe('Test authenticated product jwt route', () => {
                 .field('category', mockProduct.category)
                 .field('description', mockProduct.description)
                 .field('model', mockProduct.model)
+                .field('color', mockProduct.color)
+                .field('km', mockProduct.km)
                 .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             const product = await Product.findOne({ name: 'Mock name' })
@@ -128,10 +134,7 @@ describe('Test authenticated product jwt route', () => {
                 .patch(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
                 .field('name', 'updated mock name')
-                .attach(
-                    'thumbnail',
-                    path.join(__dirname, '..', '/mock/mock.png')
-                ) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(404)
 
@@ -146,7 +149,7 @@ describe('Test authenticated product jwt route', () => {
             const responseContinue = await request
                 .patch(`/api/v1/admin/products/1`)
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(500)
 
@@ -162,7 +165,9 @@ describe('Test authenticated product jwt route', () => {
                 .field('category', mockProduct.category)
                 .field('description', mockProduct.description)
                 .field('model', mockProduct.model)
-                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
+                .field('color', mockProduct.color)
+                .field('km', mockProduct.km)
+                .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
 
             const product = await Product.findOne({ name: 'Mock name' })
 
@@ -170,10 +175,7 @@ describe('Test authenticated product jwt route', () => {
                 .patch(`/api/v1/admin/products/${product._id}`)
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
                 .field('name', 'Updated mock name')
-                .attach(
-                    'thumbnail',
-                    path.join(__dirname, '..', '/mock/mock.png')
-                ) // attaches the file to the form
+                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(200)
 
