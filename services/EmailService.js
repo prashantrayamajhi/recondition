@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 
 module.exports = class EmailService {
-    static async sendEmail(name, email, subject, message) {
+    static async sendEmail(email, subject, message) {
         // create reusable transporter object using the default SMTP transport
         const transporter = nodemailer.createTransport({
             service: 'gmail',
