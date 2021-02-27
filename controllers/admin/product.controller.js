@@ -141,7 +141,9 @@ exports.updateProduct = async (req, res) => {
         if (color) {
             color = capitalize(color)
         }
-        description = capitalize(description)
+        if (description) {
+            description = capitalize(description)
+        }
 
         const updatedProduct = {
             name,
