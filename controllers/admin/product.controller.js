@@ -105,66 +105,66 @@ exports.updateProduct = async (req, res) => {
         console.log(req.body.image)
         req.body.image.forEach((img) => {
             console.log(img)
-            // images.push(img)
+            images.push(img)
         })
     }
-    // try {
-    //     const { id } = req.params
-    //     let { name, price, model, option, color, km, description } = req.body
-    //     const images = []
-    //     if(req.files.length > 0){
-    //         console.log('files')
-    //         console.log(req.files)
-    //         req.files.forEach((img) => {
-    //             img.path = img.path.slice(7)
-    //             images.push(img.path)
-    //         })
-    //     }
-    //     if(req.body.image){
-    //         // console.log(req.body.image)
-    //         req.body.image.forEach(img => {
-    //                 images.push(img)
-    //         })
-    //     }
-    //     if (!(await Product.findOne({ _id: id }))) {
-    //         return res.status(404).json({ err: 'Product not found' })
-    //     }
+    try {
+        const { id } = req.params
+        let { name, price, model, option, color, km, description } = req.body
+        const images = []
+        if (req.files.length > 0) {
+            console.log('files')
+            console.log(req.files)
+            req.files.forEach((img) => {
+                img.path = img.path.slice(7)
+                images.push(img.path)
+            })
+        }
+        if (req.body.image) {
+            // console.log(req.body.image)
+            req.body.image.forEach((img) => {
+                images.push(img)
+            })
+        }
+        if (!(await Product.findOne({ _id: id }))) {
+            return res.status(404).json({ err: 'Product not found' })
+        }
 
-    //     if (name) {
-    //         name = capitalize(name)
-    //     }
+        if (name) {
+            name = capitalize(name)
+        }
 
-    //     if (option) {
-    //         option = capitalize(option)
-    //     }
+        if (option) {
+            option = capitalize(option)
+        }
 
-    //     if (color) {
-    //         color = capitalize(color)
-    //     }
-    //     description = capitalize(description)
+        if (color) {
+            color = capitalize(color)
+        }
+        description = capitalize(description)
 
-    //     const updatedProduct = {
-    //         name,
-    //         model,
-    //         option,
-    //         color,
-    //         km,
-    //         price,
-    //         description,
-    //         images,
-    //     }
+        const updatedProduct = {
+            name,
+            model,
+            option,
+            color,
+            km,
+            price,
+            description,
+            images,
+        }
 
-    //     const savedProduct = await Product.findByIdAndUpdate(
-    //         { _id: id },
-    //         updatedProduct
-    //     )
-    //     if (savedProduct) {
-    //         res.status(200).send({ msg: 'Product updated' })
-    //     }
-    // } catch (err) {
-    //     console.log(err)
-    //     res.status(500).json(err)
-    // }
+        const savedProduct = await Product.findByIdAndUpdate(
+            { _id: id },
+            updatedProduct
+        )
+        if (savedProduct) {
+            res.status(200).send({ msg: 'Product updated' })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json(err)
+    }
 }
 
 /**
