@@ -68,8 +68,12 @@ exports.postProduct = async (req, res) => {
         if (option) {
             option = capitalize(option)
         }
-        color = capitalize(color)
-        description = capitalize(description)
+        if (color) {
+            color = capitalize(color)
+        }
+        if (description) {
+            description = capitalize(description)
+        }
 
         const images = []
         req.files.forEach((img) => {
