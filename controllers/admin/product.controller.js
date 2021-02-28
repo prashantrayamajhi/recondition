@@ -94,6 +94,7 @@ exports.postProduct = async (req, res) => {
         const saved = await product.save()
         res.status(201).json({ data: saved._id })
     } catch (err) {
+        console.log('here')
         console.log(err)
         res.status(500).json(err)
     }
