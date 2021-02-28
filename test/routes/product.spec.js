@@ -42,14 +42,19 @@ describe('Test authenticated product jwt route', () => {
             role: 'admin',
         })
 
-        const userId = await mockAdmin.save()._id
+        try {
+            const user = await mockAdmin.save()
+            const userId = user._id
+            accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
+                expiresIn: 24 * 60 * 60,
+            })
 
-        accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
-            expiresIn: 24 * 60 * 60,
-        })
-
-        console.log(process.env.JWT_SECRET)
-        console.log(accessToken)
+            console.log(process.env.JWT_SECRET)
+            console.log(user)
+            console.log(accessToken)
+        } catch (e) {
+            console.log(e)
+        }
 
         // Test if the test file is exist
         fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then(
@@ -63,6 +68,7 @@ describe('Test authenticated product jwt route', () => {
 
     describe('Test post product admin route', () => {
         it('Test post product route', async (done) => {
+            console.log(accessToken)
             const responseContinue = await request
                 .post('/api/v1/admin/products/')
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
