@@ -48,6 +48,7 @@ describe('Test authenticated product jwt route', () => {
             expiresIn: 24 * 60 * 60,
         })
 
+        console.log(process.env.JWT_SECRET)
         console.log(accessToken)
 
         // Test if the test file is exist
@@ -85,124 +86,6 @@ describe('Test authenticated product jwt route', () => {
             const products = await Product.find({})
 
             expect(products.length).toBe(1)
-
-            done()
-        })
-    })
-
-    describe('Test delete product admin route', () => {
-        it('Test delete product route will return 204 if success deleted', async (done) => {
-            await request
-                .post('/api/v1/admin/products/')
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .field('name', mockProduct.name)
-                .field('price', mockProduct.price)
-                .field('category', mockProduct.category)
-                .field('description', mockProduct.description)
-                .field('model', mockProduct.model)
-                .field('color', mockProduct.color)
-                .field('km', mockProduct.km)
-                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
-
-            const product = await Product.findOne({ name: 'Mock name' })
-
-            const responseContinue = await request
-                .delete(`/api/v1/admin/products/${product._id}`)
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .send(mockProduct)
-
-            expect(responseContinue.statusCode).toBe(204)
-
-            expect(responseContinue.body).toBeTruthy()
-
-            done()
-        })
-
-        it('Test delete product route will return 500 if product _id is not of type object id', async (done) => {
-            const responseContinue = await request
-                .delete(`/api/v1/admin/products/1`)
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-
-            expect(responseContinue.statusCode).toBe(500)
-
-            done()
-        })
-
-        it('Test delete product route will return 404 if product not exists', async (done) => {
-            const responseContinue = await request
-                .delete(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-
-            expect(responseContinue.statusCode).toBe(404)
-
-            expect(responseContinue.body).toMatchObject({
-                msg: 'Product not found',
-            })
-
-            done()
-        })
-    })
-    describe('Test update product admin route', () => {
-        it('Test update product route will return 404 if product not exists', async (done) => {
-            const responseContinue = await request
-                .patch(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .field('name', 'updated mock name')
-                .field('editImage', [])
-                .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
-
-            expect(responseContinue.statusCode).toBe(404)
-
-            expect(responseContinue.body).toMatchObject({
-                err: 'Product not found',
-            })
-
-            done()
-        })
-
-        it('Test update product route will return 500 if product _id is bad', async (done) => {
-            const responseContinue = await request
-                .patch(`/api/v1/admin/products/1`)
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
-
-            expect(responseContinue.statusCode).toBe(500)
-
-            done()
-        })
-
-        it('Test update product route will return 200 if product is updated', async (done) => {
-            await request
-                .post('/api/v1/admin/products/')
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .field('name', mockProduct.name)
-                .field('price', mockProduct.price)
-                .field('category', mockProduct.category)
-                .field('description', mockProduct.description)
-                .field('model', mockProduct.model)
-                .field('color', mockProduct.color)
-                .field('km', mockProduct.km)
-                .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
-
-            const product = await Product.findOne({ name: 'Mock name' })
-
-            const responseContinue = await request
-                .patch(`/api/v1/admin/products/${product._id}`)
-                .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
-                .field('name', 'Updated mock name')
-                .attach('image', path.join(__dirname, '..', '/mock/mock.png')) // attaches the file to the form
-
-            expect(responseContinue.statusCode).toBe(200)
-
-            const productOld = await Product.findOne({ name: 'Mock name' })
-
-            const productNew = await Product.findOne({
-                name: 'Updated mock name',
-            })
-
-            expect(productOld).toBeNull()
-
-            expect(productNew).not.toBeNull()
 
             done()
         })
