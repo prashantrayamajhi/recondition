@@ -52,7 +52,7 @@ describe('Test authenticated product jwt route', () => {
 
         console.log(response.statusCode)
 
-        console.log(accessToken)
+        console.log(response.body)
 
         // Test if the test file is exist
         fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then(
