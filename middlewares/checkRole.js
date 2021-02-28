@@ -21,6 +21,7 @@ exports.adminRouteRequired = (req, res, next) => {
  * @returns {*}
  */
 exports.adminAndCoAdminRouteRequired = (req, res, next) => {
+    console.log('passed')
     if (req.user.role === 'admin' || req.user.role === 'co-admin') {
         next()
     } else {

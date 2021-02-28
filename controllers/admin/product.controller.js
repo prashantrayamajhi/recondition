@@ -62,7 +62,6 @@ exports.getProductsByLimit = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.postProduct = async (req, res) => {
-    console.log('passed')
     try {
         let { name, price, model, option, color, km, description } = req.body
         name = capitalize(name)
