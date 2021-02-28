@@ -50,6 +50,10 @@ describe('Test authenticated product jwt route', () => {
 
         accessToken = response.body.accessToken
 
+        console.log(response)
+
+        console.log(accessToken)
+
         // Test if the test file is exist
         fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then(
             (exists) => {
@@ -62,8 +66,6 @@ describe('Test authenticated product jwt route', () => {
 
     describe('Test post product admin route', () => {
         it('Test post product route', async (done) => {
-            console.log(accessToken)
-
             const responseContinue = await request
                 .post('/api/v1/admin/products/')
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
