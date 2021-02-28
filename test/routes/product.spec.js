@@ -6,6 +6,7 @@ const supertest = require('supertest')
 const Product = require('../../models/Product')
 const User = require('../../models/User')
 const app = require('../../app')
+const jwt = require('jsonwebtoken')
 const { getAccessTokenByLoginWithMockUser } = require('../functions/helper')
 const { createMockAdmin } = require('../functions/helper')
 const { connectToDatabase } = require('../functions/helper')
@@ -41,18 +42,13 @@ describe('Test authenticated product jwt route', () => {
             role: 'admin',
         })
 
-        await mockAdmin.save()
+        const userId = await mockAdmin.save()._id
 
-        const response = await request.post('/api/v1/admin/auth/login').send({
-            email: 'email@mock.com',
-            password: 'mock password',
+        accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
+            expiresIn: 24 * 60 * 60,
         })
 
-        accessToken = response.body.accessToken
-
-        console.log(response.statusCode)
-
-        console.log(response.body)
+        console.log(accessToken)
 
         // Test if the test file is exist
         fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then(
