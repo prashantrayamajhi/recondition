@@ -32,9 +32,23 @@ describe('Test authenticated product jwt route', () => {
     beforeEach(async (done) => {
         await User.deleteMany({})
         await Product.deleteMany({})
-        await createMockAdmin()
+        const mockAdmin = new User({
+            name: 'Mock username',
+            email: 'email@mock.com',
+            phone: 'mock phone',
+            password: 'mock password',
+            address: 'mock_address',
+            role: 'admin',
+        })
 
-        accessToken = await getAccessTokenByLoginWithMockUser()
+        await mockAdmin.save()
+
+        const response = await request.post('/api/v1/admin/auth/login').send({
+            email: 'email@mock.com',
+            password: 'mock password',
+        })
+
+        accessToken = response.body.accessToken
 
         // Test if the test file is exist
         fs.exists(path.join(__dirname, '..', '/mock/mock.png')).then(
