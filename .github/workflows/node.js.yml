@@ -35,5 +35,5 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
       env:
-        JWT_SECRET: azeazeazezaezaeazeazfzdza,,e;za,elazje
-        DATABASE_URI_TEST: mongodb://localhost:27017/automobile_test
+        JWT_SECRET: waschghh@rerfhs#fhfhf^vhs&*987rt1m8iu
+        DATABASE_URI_TEST: mongodb://localhost:27017/recondition_admin_testing
