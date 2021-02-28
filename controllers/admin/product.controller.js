@@ -33,7 +33,7 @@ exports.getProductById = async (req, res) => {
             res.status(404).send({ err: 'Product not found' })
         }
     } catch (err) {
-        console.log(err)
+        //console.log(err)
         res.status(500).send(err)
     }
 }
@@ -62,6 +62,7 @@ exports.getProductsByLimit = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.postProduct = async (req, res) => {
+    console.log('passed')
     try {
         let { name, price, model, option, color, km, description } = req.body
         name = capitalize(name)
@@ -94,7 +95,6 @@ exports.postProduct = async (req, res) => {
         const saved = await product.save()
         res.status(201).json({ data: saved._id })
     } catch (err) {
-        console.log('here')
         console.log(err)
         res.status(500).json(err)
     }
@@ -164,7 +164,7 @@ exports.updateProduct = async (req, res) => {
             res.status(200).send({ msg: 'Product updated' })
         }
     } catch (err) {
-        console.log(err)
+        //console.log(err)
         res.status(500).json(err)
     }
 }
@@ -184,7 +184,7 @@ exports.deleteProduct = async (req, res) => {
         }
         return res.status(404).send({ msg: 'Product not found' })
     } catch (err) {
-        console.log(err)
+        //console.log(err)
         return res.status(500).json(err)
     }
 }
