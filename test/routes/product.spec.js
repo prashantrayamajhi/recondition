@@ -134,6 +134,7 @@ describe('Test authenticated product jwt route', () => {
                 .patch(`/api/v1/admin/products/5d6ede6a0ba62570afcedd3a`)
                 .set('Authorization', `Bearer ${accessToken}`) // Set authentication header
                 .field('name', 'updated mock name')
+                .field('editImage', [])
                 .attach('image', path.join(__dirname, '..', '/mock/mock2.png')) // attaches the file to the form
 
             expect(responseContinue.statusCode).toBe(404)

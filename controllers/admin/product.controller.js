@@ -116,12 +116,15 @@ exports.updateProduct = async (req, res) => {
                 images.push(img.path)
             })
         }
-        if(req.body.editImage.length > 0){
-            imgArr = req.body.editImage.split(',')
-            imgArr.forEach(img => {
-                images.push(img)
-            })
+        if (req.body.editImage) {
+            if (req.body.editImage.length > 0) {
+                imgArr = req.body.editImage.split(',')
+                imgArr.forEach((img) => {
+                    images.push(img)
+                })
+            }
         }
+
         if (!(await Product.findOne({ _id: id }))) {
             return res.status(404).json({ err: 'Product not found' })
         }
