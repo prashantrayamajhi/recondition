@@ -45,7 +45,7 @@ describe('Test authenticated product jwt route', () => {
         try {
             const user = await mockAdmin.save()
             const userId = user._id
-            accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
+            accessToken = await jwt.sign({ userId }, process.env.JWT_SECRET, {
                 expiresIn: 24 * 60 * 60,
             })
 
