@@ -50,7 +50,7 @@ describe('Test authenticated product jwt route', () => {
 
         accessToken = response.body.accessToken
 
-        console.log(response)
+        console.log(response.statusCode)
 
         console.log(accessToken)
 
