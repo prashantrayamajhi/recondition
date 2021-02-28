@@ -27,6 +27,7 @@ exports.getProductById = async (req, res) => {
         const { id } = req.params
         const product = await Product.findOne({ _id: id })
         if (product) {
+            console.log(product)
             res.status(200).json({ data: product })
         } else {
             res.status(404).send({ err: 'Product not found' })
@@ -105,28 +106,19 @@ exports.postProduct = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.updateProduct = async (req, res) => {
-    if (req.body.image) {
-        console.log(req.body.image)
-        req.body.image.forEach((img) => {
-            console.log(img)
-            images.push(img)
-        })
-    }
     try {
         const { id } = req.params
         let { name, price, model, option, color, km, description } = req.body
         const images = []
         if (req.files.length > 0) {
-            console.log('files')
-            console.log(req.files)
             req.files.forEach((img) => {
                 img.path = img.path.slice(7)
                 images.push(img.path)
             })
         }
-        if (req.body.image) {
-            // console.log(req.body.image)
-            req.body.image.forEach((img) => {
+        if(req.body.editImage.length > 0){
+            imgArr = req.body.editImage.split(',')
+            imgArr.forEach(img => {
                 images.push(img)
             })
         }
